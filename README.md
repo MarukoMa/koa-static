@@ -17,26 +17,26 @@ const koa = require('koa')
 const app = new koa()
 app.use(require('koaStatic')(root, opts));
 
-.root:根目录
-.opts options object.
+* root:根目录
+* opts options object.
 
 ## options
 
-.htmlCache  html文件是否缓存,默认关闭(false),参数为:boolean
-.maxAge   是否开启强缓存,并且支持其他时间单位配置( y:年 M:月 d:日 h:时 m:分 ),参数为:string,默认为空
-.lastModified 默认打开(true), 如果有效http状态码返回304 参数为:boolean
-.etag   默认关闭(false), 如果有效http状态码返回304 参数为:boolean
+* htmlCache  html文件是否缓存,默认关闭(false),参数为:boolean
+* maxAge   是否开启强缓存,并且支持其他时间单位配置( y:年 M:月 d:日 h:时 m:分 ),参数为:string,默认为空
+* lastModified 默认打开(true), 如果有效http状态码返回304 参数为:boolean
+* etag   默认关闭(false), 如果有效http状态码返回304 参数为:boolean
 
 
 ### Example
-const koa = require('koa')
-const app = new koa()
-const static = require('koaStatic')
-const opts = {
-    htmlCache:false,   
-    maxAge:'2m',      
-    lastModified:true,  
-    etag:false
-}
-app.use(static((__dirname +'/static'),opts));
-app.listen(1000)
+* const koa = require('koa')
+* const app = new koa()
+* const static = require('koaStatic')
+* const opts = {
+*     htmlCache:false,   
+*     maxAge:'2m',      
+*     lastModified:true,  
+*     etag:false
+* }
+* app.use(static((__dirname +'/static'),opts));
+* app.listen(1000)
