@@ -78,7 +78,13 @@ function setContentType(url){
     return mimes[extname]
 }
 function staticFun(dir,opts){
-    opts = Object.assign({htmlCache:false,maxAge:'',lastModified:true,etag:false},opts);
+    const defaultOpts = {
+        htmlCache:false,
+        maxAge:'',
+        lastModified:true,
+        etag:false
+    }
+    opts = Object.assign(defaultOpts,opts);
     return async  function(ctx,next){  
         try{
             const ifModifiedSince = ctx.request.header['if-modified-since']

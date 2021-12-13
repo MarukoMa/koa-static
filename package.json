@@ -1,21 +1,22 @@
 {
-    "name": "koa-tatic",
-    "version": "1.0.0",
-    "description": "koa-tatic",
-    "main": "server.js",
-    "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1",
-      "start": "nodemon server.js",
-      "debug": "node --inspect server.js",
-      "pub": "sh publish.sh"
-    },
-    "respository":"https://github.com/MarukoMa/koa-static.git",
-    "keywords": [ "koa-tatic"],
-    "author": "MarukoMa",
-    "license": "ISC",
-    "dependencies": {
-      "koa": "^2.13.4",
-      "nodemon": "^2.0.15"
-    }
+  "name": "koaStatic",
+  "version": "1.0.0",
+  "description": "koa-tatic",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "debug": "node --inspect server.js",
+    "pub": "sh publish.sh"
+  },
+  "respository": "https://github.com/MarukoMa/koa-static.git",
+  "keywords": [
+    "koa-tatic"
+  ],
+  "author": "MarukoMa",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^2.13.4",
+    "nodemon": "^2.0.15"
   }
-  
+}
