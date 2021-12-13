@@ -1,15 +1,16 @@
 {
-  "name": "custom-koa-tatic",
+  "name": "koa-tatic",
   "version": "1.0.0",
-  "description": "cutom koaStatic",
+  "description": "koa-tatic",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
     "debug": "node --inspect server.js"
   },
-  "keywords": [],
-  "author": "zhj",
+  "respository":"https://github.com/MarukoMa/koa-static.git",
+  "keywords": [ "koa-tatic"],
+  "author": "MarukoMa",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.13.4",

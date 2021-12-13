@@ -12,7 +12,7 @@ function parseStatic(dir){
     })
   }
 //取文件信息
-function statfile(url){
+function statFile(url){
     return new Promise((resolve,reject)=>{
         fs.stat(url, function (err, stats) {
             if(err) return reject(err)
@@ -35,11 +35,11 @@ const mimes = {
   pdf: 'application/pdf',
   png: 'image/png'
 };
-let maxage = 0;
 //处理强缓存时间单位y M d h m s
-function getMaxage(maxage){
-    const unit = maxage.substring(maxage.length-1);
-    const time = maxage.substring(0,maxage.length-1);
+function getMaxage(value){
+    let maxage = 0;
+    const unit = value.substring(value.length-1);
+    const time = value.substring(0,value.length-1);
      switch(unit){
         case 's':
             maxage = time
@@ -65,6 +65,7 @@ function getMaxage(maxage){
             maxage = time * 60 * 60 * 24 * 30 * 365
             break;
         default:
+            maxage = value
             break
 
     }
@@ -77,69 +78,50 @@ function setContentType(url){
     return mimes[extname]
 }
 function staticFun(dir,opts){
+    opts = Object.assign({htmlCache:false,maxAge:'',lastModified:true,etag:false},opts);
     return async  function(ctx,next){  
-        let staticFile = dir.substring(dir.lastIndexOf('/') + 1)
-            staticFile =  ctx.url.indexOf(staticFile); //取是否静态资源目录
-        const currPath = path.relative('/',ctx.url);
-        let statsName; // 读文件信息
-        if(staticFile > 0){
-            try{
-                ctx.set('Content-Type', setContentType(ctx.url))
-                const ifModifiedSince = ctx.request.header['if-modified-since']
-                const ifNoneMatch = ctx.request.headers['if-none-match']
-                let hash = "";
-                let bodyCont = ""
-                let status = 200
-                if(opts.maxAge){
-                    maxage = getMaxage(opts.maxAge)
-                    ctx.set({
-                        'Cache-Control':`max-age=${maxage}`,
-                    })
-                } else {
-                    ctx.set({
-                        'Cache-Control': 'no-cache'
-                    })
-                }
-                if(opts.lastModified){
-                    statsName = await statfile(currPath); // 读文件信息
-                    ctx.set('Last-Modified',statsName.mtime.toGMTString())
-                    if(ifModifiedSince === statsName.mtime.toGMTString()){
-                        status = ctx.status = 304
-                    }
-                }
-                if(opts.etag){
-                    bodyCont = await parseStatic(currPath) 
-                    hash = crypto.createHash('md5').update(bodyCont).digest('base64')
-                    ctx.set('Etag',hash)
-                    if(ifNoneMatch === hash){
-                        status = ctx.status = 304
-                    }
-                }
-                if(status === 200){
-                    ctx.status = 200
-                    ctx.body = await parseStatic(currPath) 
-                }
-                
-            }catch(e){
-                ctx.status = 404
-                console.log(e)
-            }
-        }else if(ctx.url == '/' || path.extname(ctx.url) == '.html' || path.extname(ctx.url) == '.htm'){
-            if(opts.htmlCache){
-                maxage = getMaxage(opts.maxAge)
-                ctx.set({
-                    'Cache-Control':`max-age=${maxage}`,
-                })
-            }else{
-                ctx.set({
-                    'Cache-Control':'no-cache'
-                })
-            }
+        try{
+            const ifModifiedSince = ctx.request.header['if-modified-since']
+            const ifNoneMatch = ctx.request.headers['if-none-match']
             ctx.status = 200
-            ctx.set({
-                'Content-Type':'text/html'
-            })
-            ctx.body = await parseStatic('./index.html')
+            const currUrl = path.relative('/',ctx.url);
+            const filePath = currUrl?currUrl:'./index.html'
+            const isHtml = (ctx.url == '/' || path.extname(ctx.url) == '.html' || path.extname(ctx.url) == '.htm')?true:false
+            if(!isHtml){
+                ctx.set('Content-Type', setContentType(ctx.url))
+            }else{
+                ctx.set({'Content-Type':'text/html'})
+            }
+            if(opts.maxAge && (!isHtml || opts.htmlCache && isHtml)){
+                ctx.set({
+                    'Cache-Control':`max-age=${getMaxage(opts.maxAge)}`,
+                })
+            } else {
+                ctx.set({
+                    'Cache-Control': 'no-cache'
+                })
+            }
+            if(opts.lastModified && !isHtml){
+                const statFileInfo = await statFile(filePath); // 读文件信息
+                ctx.set('Last-Modified',statFileInfo.mtime.toGMTString())
+                if(ifModifiedSince === statFileInfo.mtime.toGMTString()){
+                    ctx.status = 304
+                }
+            }
+            if(opts.etag && !isHtml){
+                const bodyCont = await parseStatic(filePath) 
+                const hash = crypto.createHash('md5').update(bodyCont).digest('base64')
+                ctx.set('Etag',hash)
+                if(ifNoneMatch === hash){
+                    ctx.status = 304
+                }
+            }
+            if(ctx.status === 200){
+                ctx.status = 200
+                ctx.body = await parseStatic(filePath) 
+            }
+        }catch(e){
+            console.log(e)
         }
     }
 }

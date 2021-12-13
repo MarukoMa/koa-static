@@ -3,7 +3,7 @@ const app = new koa()
 const static = require('./static') 
 const opts = {
     htmlCache:false,   
-    maxAge:'',      
+    maxAge:'3y',      
     lastModified:true,  
     etag:false
 }
