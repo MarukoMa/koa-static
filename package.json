@@ -1,6 +1,6 @@
 {
-  "name": "koaStatic",
-  "version": "1.0.0",
+  "name": "static-koa",
+  "version": "1.0.1",
   "description": "koa-tatic",
   "main": "server.js",
   "scripts": {

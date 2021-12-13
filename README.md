@@ -1,4 +1,4 @@
-# koa-static
+# static-koa
 
 自定义静态资源中间件koa-static,此背景源于笔者学习测试强缓存、协商缓存具体使用学习而开发的.
 * 支持能支持无后缀的路径pathname,默认响应此目录下的index.html，并支持可配
@@ -9,14 +9,15 @@
   
 ### Installation
 
-`$ npm install --save-dev koaStatic`
+`$ npm i static-koa`
 
 ### API
 
+```javascript
 const koa = require('koa')
 const app = new koa()
-app.use(require('koaStatic')(root, opts));
-
+app.use(require('static-koa')(root, opts));
+```
 * root:根目录
 * opts options object.
 
@@ -29,14 +30,19 @@ app.use(require('koaStatic')(root, opts));
 
 
 ### Example
-* const koa = require('koa')
-* const app = new koa()
-* const static = require('koaStatic')
-* const opts = {
-*     htmlCache:false,   
-*     maxAge:'2m',      
-*     lastModified:true,  
-*     etag:false
-* }
-* app.use(static((__dirname +'/static'),opts));
-* app.listen(1000)
+```javascript
+
+const koa = require('koa')
+const app = new koa()
+const static = require('static-koa')
+const opts = {
+    htmlCache:false,   
+    maxAge:'2m',      
+    lastModified:true,  
+    etag:false
+ }
+ app.use(static((__dirname +'/static'),opts));
+ app.listen(1000)
+
+```
+
