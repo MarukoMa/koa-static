@@ -4,8 +4,8 @@ const crypto = require('crypto')
 
 //读文件内容
 function parseStatic(dir){
-    return new Promise((resolve,reject) => {
-        fs.readFile(dir,(err,data)=>{
+    return new Promise((resolve, reject) => {
+        fs.readFile(dir, (err, data)=>{
             if(err) return reject(err) 
             resolve(data)
         })
@@ -13,7 +13,7 @@ function parseStatic(dir){
   }
 //取文件信息
 function statFile(url){
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve, reject)=>{
         fs.stat(url, function (err, stats) {
             if(err) return reject(err)
             resolve(stats)        //true
@@ -39,7 +39,7 @@ const mimes = {
 function getMaxage(value){
     let maxage = 0;
     const unit = value.substring(value.length-1);
-    const time = value.substring(0,value.length-1);
+    const time = value.substring(0, value.length-1);
      switch(unit){
         case 's':
             maxage = time
@@ -77,20 +77,20 @@ function setContentType(url){
     extname = extname?extname.substring(1):''
     return mimes[extname]
 }
-function staticFun(dir,opts){
+function staticFun(dir, opts){
     const defaultOpts = {
         htmlCache:false,
         maxAge:'',
         lastModified:true,
         etag:false
     }
-    opts = Object.assign(defaultOpts,opts);
-    return async  function(ctx,next){  
+    opts = Object.assign(defaultOpts, opts);
+    return async  function(ctx, next){  
         try{
             const ifModifiedSince = ctx.request.header['if-modified-since']
             const ifNoneMatch = ctx.request.headers['if-none-match']
             ctx.status = 200
-            const currUrl = path.relative('/',ctx.url);
+            const currUrl = path.relative('/', ctx.url);
             const filePath = currUrl?currUrl:'./index.html'
             const isHtml = (ctx.url == '/' || path.extname(ctx.url) == '.html' || path.extname(ctx.url) == '.htm')?true:false
             if(!isHtml){
